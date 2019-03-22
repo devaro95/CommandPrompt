@@ -1,14 +1,9 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
 
 public class CdCommand {
 	String directorioActual = "";
@@ -43,6 +38,7 @@ public class CdCommand {
 			while((linea=br.readLine())!=null) {
 				System.out.println(linea);
 			}
+			br.close();
 		}else {
 			System.out.println("No es un fichero o no existe");
 		}
@@ -58,6 +54,7 @@ public class CdCommand {
 				System.out.println(linea);
 				contador++;
 			}
+			br.close();
 		}else {
 			System.out.println("No es un fichero o no existe");
 		}
