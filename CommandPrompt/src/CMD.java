@@ -91,10 +91,20 @@ public class CMD {
 			        for (int x=0;x<ficheros.length;x++)
 			          System.out.println(ficheros[x]);
 			    }
-			}else if(comando.length==2 && comando[0].equals("Dir")) {
+			}else if(comando.length==2 && comando[0].equals("Dir") && !comando[1].startsWith("/")) {
 				nombre = comando[1];
 				directorioActual = cd.directorioActual(miDir);
 				File dir = new File(directorioActual + "/" + nombre);
+				String[] ficheros = dir.list();
+			    if (ficheros == null)
+			        System.out.println("No hay ficheros en el directorio especificado");
+			      else { 
+			        for (int x=0;x<ficheros.length;x++)
+			          System.out.println(ficheros[x]);
+			    }
+			}else if(comando.length==2 && comando[0].equals("Dir") && comando[1].startsWith("/")) {
+				nombre = comando[1];
+				File dir = new File(nombre);
 				String[] ficheros = dir.list();
 			    if (ficheros == null)
 			        System.out.println("No hay ficheros en el directorio especificado");
@@ -106,7 +116,7 @@ public class CMD {
 				nombre = comando[1];
 				cd.delete(nombre, miDir);
 			}else {
-				System.out.println("El comando '" + comando[0] + "' no existe");
+				System.out.println("El comando '" + opcion + "' no existe o no has puesto bien los argumentos escribe help para listar los comandos.");
 			}
 			
 		}
