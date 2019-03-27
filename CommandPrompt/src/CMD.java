@@ -41,7 +41,7 @@ public class CMD {
 					contenido += comando[i] + " ";
 				}
 				cd.write(nombre, miDir, contenido);
-			}else if(comando.length==2 && comando[0].equals("cd") && !comando[1].equals("..") && comando[1].startsWith("/")) {
+			}else if(comando.length==2 && comando[0].equals("cd") && !comando[1].equals("..") && (comando[1].startsWith("/") || comando[1].startsWith("C:"))) {
 				nombre = comando[1];
 				try {
 					miDir = cd.moverAbsoluto(nombre, miDir);
@@ -62,10 +62,10 @@ public class CMD {
 				System.out.println(directorioActual);
 			}else if(comando.length==1 && comando[0].equals("dir")) {
 				cd.listarDirectorioActual(miDir);
-			}else if(comando.length==2 && comando[0].equals("dir") && !comando[1].startsWith("/")) {
+			}else if(comando.length==2 && comando[0].equals("dir") && !comando[1].startsWith("/") && !comando[1].startsWith("C:")) {
 				nombre = comando[1];
 				cd.listarDirectorio(nombre, miDir);
-			}else if(comando.length==2 && comando[0].equals("dir") && comando[1].startsWith("/")) {
+			}else if(comando.length==2 && comando[0].equals("dir") && (comando[1].startsWith("/") || comando[1].startsWith("C:"))) {
 				nombre = comando[1];
 				cd.listarDirectorioAbsoluto(nombre);
 			}else if(comando.length==2 && comando[0].equals("delete")) {
