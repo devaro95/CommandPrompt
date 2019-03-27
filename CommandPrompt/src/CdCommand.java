@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 
 public class CdCommand {
-	String directorioActual = "";
+
 	public String directorioActual(File directorio) {
+		String directorioActual = "";
 		try {
 			directorioActual = directorio.getCanonicalPath();
 		}
@@ -58,31 +60,43 @@ public class CdCommand {
 		}else {
 			System.out.println("No es un fichero o no existe");
 		}
-
 	}
 	public void write(String nombre, File directorio, String contenido) throws IOException {
 		File miDir = new File(directorioActual(directorio)+"/"+nombre);
-		miDir.createNewFile();
-		FileWriter fw = new FileWriter (miDir, true);
-		BufferedWriter bw = new BufferedWriter(fw);
-		bw.write(contenido);
-		bw.close();
+		if(miDir.isFile() && miDir.exists()) {
+			FileWriter fw = new FileWriter (miDir, true);
+			BufferedWriter bw = new BufferedWriter(fw);
+			bw.write(contenido);
+			bw.close();
+		}else {
+			System.out.println("No existe o es un directorio");
+		}
 	}
 	public File moverDirectorio(String nombre, File directorio) throws Exception {
 		File miDir = new File(directorioActual(directorio));
 		File nuevoDirec = new File(miDir +"/"+ nombre);
-		if(nuevoDirec.exists()) {
+		if(nuevoDirec.exists() && nuevoDirec.isDirectory()) {
 			return nuevoDirec;
 		}else {
-			throw new Exception("No existe el directorio");
+			System.out.println("No existe el directorio o no es un directorio");
+			return miDir;
 		}
 	}
-	public File moverAbsoluto(String nombre) throws Exception {
+	public File moverPadre(File directorio) {
+		if(directorio.getParent() == null) {
+			return directorio;
+		}else {
+			File miDir = new File(directorio.getParent());
+			return miDir;
+		}
+	}
+	public File moverAbsoluto(String nombre, File directorio) throws Exception {
 		File miDir = new File(nombre);
-		if(miDir.exists()) {
+		if(miDir.exists() && miDir.isDirectory()) {
 			return miDir;
 		}else {
-			throw new Exception("No existe el directorio");
+			System.out.println("No existe el directorio o no es un directorio");
+			return directorio;
 		}
 	}
 	
@@ -95,22 +109,88 @@ public class CdCommand {
 			 System.out.println("El fichero " + f.toString() + " no se ha podido borrar");
 		}else if(f.isDirectory()){
 			borrarDirectorio(f);
-			 
 			if (f.delete())
 			  System.out.println("El directorio '" + f.toString() + "' ha sido borrado correctamente.");
 			else
 			  System.out.println("El directorio '" + f.toString() + "' no se ha podido borrar.");
 		}
 	}
-	
+	public void listarDirectorioActual(File directorio) {
+		String[] ficheros = directorio.list();
+	    if (ficheros == null)
+	        System.out.println("No hay ficheros en el directorio especificado");
+	      else { 
+	        for (int x=0;x<ficheros.length;x++)
+	          System.out.println(ficheros[x]);
+	    }
+	}
+	public void listarDirectorio(String nombre, File directorio) {
+		File dir = new File(directorio + "/" + nombre);
+		String[] ficheros = dir.list();
+	    if (ficheros == null)
+	        System.out.println("No hay ficheros en el directorio especificado");
+	      else { 
+	        for (int x=0;x<ficheros.length;x++)
+	          System.out.println(ficheros[x]);
+	    }
+	}
+	public void listarDirectorioAbsoluto(String nombre) {
+		File dir = new File(nombre);
+		String[] ficheros = dir.list();
+	    if (ficheros == null)
+	        System.out.println("No hay ficheros en el directorio especificado");
+	      else { 
+	        for (int x=0;x<ficheros.length;x++)
+	          System.out.println(ficheros[x]);
+	    }
+	}
 	public void borrarDirectorio(File directorio) throws Exception {
 		 File[] ficheros = directorio.listFiles();
-		 
 		 for (int x=0;x<ficheros.length;x++){
 			 if (ficheros[x].isDirectory()) {
 				  borrarDirectorio(ficheros[x]);
 				}
 			 ficheros[x].delete();
 		 }
+	}
+	public void info(String nombre, File directorio) {
+		File dir = new File(directorio + "/" +  nombre);
+		if(dir.isFile()) {
+			System.out.println("Nombre directorio: " + dir.getName());
+			System.out.println("Nombre directorio padre: " + dir.getParent());
+			System.out.println("Tamaño: " + formatear(dir.length()));
+		}else if(dir.isDirectory()){
+			System.out.println("Nombre directorio: " + dir.getName());
+			System.out.println("Nombre directorio padre: " + dir.getParent());
+			System.out.println("Tamaño: " + formatear(infoDirectory(dir)));
+		}else {
+			System.out.println(dir.getName() + ": No existe el archivo o el directorio");
+		}
+	}
+	public float infoDirectory(File directorio) {
+		String[] listado = directorio.list();
+		float tamano = 0;
+		for(int i=0; i<listado.length; i++) {
+			File dir = new File(directorio + "/" + listado[i]);
+			if(dir.isDirectory()){
+				tamano += infoDirectory(dir);
+			}else {
+				tamano += dir.length();
+			}
+		}
+		return tamano;
+	}
+	public String formatear(float tamano) {
+		String cadena;
+		DecimalFormat df = new DecimalFormat("#.00");
+		if(tamano>1024000000)
+			cadena = df.format(tamano/1024000000) + " Gb";
+		else if(tamano>1024000)
+			cadena = df.format(tamano/1024000) + " Mb";
+		else if(tamano>1024)
+			cadena = df.format(tamano/1024) + " Kb";
+		else
+			cadena = df.format(tamano) + " bytes";
+		return cadena;
 	}
 }

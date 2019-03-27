@@ -28,8 +28,10 @@ public class CMD {
 						+ "top <numero_lineas> <nombre_fichero>: Mostrar las primeras lineas de un fichero.\n"
 						+ "mkfile <nombre_fichero> <texto>: Crear un nuevo fichero.\n"
 						+ "write <nombre_fichero> <texto>: Añadir texto a un fichero existente.\n"
-						+ "Dir: Lista los archivos contenidos en el path actual.\n"
-						+ "Delete <nombre_archivo_o_directorio>: Borra un archivo o una carpeta, en caso de ser una\n" + 
+						+ "info <nombre_archivo_o_directorio> este comando imprimirá los datos básicos de un archivo\n" + 
+						"o directorio: su nombre, nombre de la carpeta padre, el tamaño del archivo o la carpeta.\n"
+						+ "dir: Lista los archivos contenidos en el path actual.\n"
+						+ "delete <nombre_archivo_o_directorio>: Borra un archivo o una carpeta, en caso de ser una\n" + 
 						"carpeta borra todos los archivos que la contienen.");
 			}else if(comando.length==3 && comando[0].equals("mkfile")){
 				nombre = comando[1];
@@ -55,7 +57,7 @@ public class CMD {
 			}else if(comando.length==2 && comando[0].equals("cd") && !comando[1].equals("..") && comando[1].startsWith("/")) {
 				nombre = comando[1];
 				try {
-					miDir = cd.moverAbsoluto(nombre);
+					miDir = cd.moverAbsoluto(nombre, miDir);
 				} catch (Exception e) {
 					System.out.println(e);
 				}
@@ -67,54 +69,24 @@ public class CMD {
 					System.out.println(e);
 				}
 			}else if(comando.length==2 && comando[0].equals("cd") && comando[1].equals("..")) {
-				String[] ruta = cd.directorioActual(miDir).split("/");
-				String nuevaRuta = "";
-				if(ruta.length>=3) {
-					for(int i=0; i<ruta.length-1; i++) {
-						if(i<ruta.length-2) nuevaRuta += ruta[i]+"/";
-						else nuevaRuta += ruta[i];
-					}					
-				}else {
-					nuevaRuta = "/";
-				}
-				miDir = new File(nuevaRuta);
+				miDir = cd.moverPadre(miDir);
 			}else if(comando.length==1 && comando[0].equals("cd")) {
 				directorioActual = cd.directorioActual(miDir);
 				System.out.println(directorioActual);
-			}else if(comando.length==1 && comando[0].equals("Dir")) {
-				directorioActual = cd.directorioActual(miDir);
-				File dir = new File(directorioActual);
-				String[] ficheros = dir.list();
-			    if (ficheros == null)
-			        System.out.println("No hay ficheros en el directorio especificado");
-			      else { 
-			        for (int x=0;x<ficheros.length;x++)
-			          System.out.println(ficheros[x]);
-			    }
-			}else if(comando.length==2 && comando[0].equals("Dir") && !comando[1].startsWith("/")) {
+			}else if(comando.length==1 && comando[0].equals("dir")) {
+				cd.listarDirectorioActual(miDir);
+			}else if(comando.length==2 && comando[0].equals("dir") && !comando[1].startsWith("/")) {
 				nombre = comando[1];
-				directorioActual = cd.directorioActual(miDir);
-				File dir = new File(directorioActual + "/" + nombre);
-				String[] ficheros = dir.list();
-			    if (ficheros == null)
-			        System.out.println("No hay ficheros en el directorio especificado");
-			      else { 
-			        for (int x=0;x<ficheros.length;x++)
-			          System.out.println(ficheros[x]);
-			    }
-			}else if(comando.length==2 && comando[0].equals("Dir") && comando[1].startsWith("/")) {
+				cd.listarDirectorio(nombre, miDir);
+			}else if(comando.length==2 && comando[0].equals("dir") && comando[1].startsWith("/")) {
 				nombre = comando[1];
-				File dir = new File(nombre);
-				String[] ficheros = dir.list();
-			    if (ficheros == null)
-			        System.out.println("No hay ficheros en el directorio especificado");
-			      else { 
-			        for (int x=0;x<ficheros.length;x++)
-			          System.out.println(ficheros[x]);
-			    }
-			}else if(comando.length==2 && comando[0].equals("Delete")) {
+				cd.listarDirectorioAbsoluto(nombre);
+			}else if(comando.length==2 && comando[0].equals("delete")) {
 				nombre = comando[1];
 				cd.delete(nombre, miDir);
+			}else if(comando.length==2 && comando[0].equals("info") && !comando[1].startsWith("/")) {
+				nombre = comando[1];
+				cd.info(nombre, miDir);
 			}else {
 				System.out.println("El comando '" + opcion + "' no existe o no has puesto bien los argumentos escribe help para listar los comandos.");
 			}
