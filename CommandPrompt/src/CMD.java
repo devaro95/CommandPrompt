@@ -19,20 +19,7 @@ public class CMD {
 			opcion = teclado.nextLine();
 			comando = opcion.split(" ");
 			if(comando.length==1 && comando[0].equals("help")) {
-				System.out.println("cd:\n  -cd : Mostrar directorio actual. \n  "
-						+ "-cd : Acceder al directorio padre.\n  "
-						+ "-cd <nombre directorio>: Acceder a un directorio \n  "
-						+ "-cd <C:\\Nombre_Directorio>: Accedee a una ruta absoluta del sistema.\n"
-						+ "mkdir <nombre_directorio>: Creae directorio en la ruta actual.\n"
-						+ "cat <nombre_fichero> : Mostrar contenido de un fichero a través del terminal.\n"
-						+ "top <numero_lineas> <nombre_fichero>: Mostrar las primeras lineas de un fichero.\n"
-						+ "mkfile <nombre_fichero> <texto>: Crear un nuevo fichero.\n"
-						+ "write <nombre_fichero> <texto>: Añadir texto a un fichero existente.\n"
-						+ "info <nombre_archivo_o_directorio> este comando imprimirá los datos básicos de un archivo\n" + 
-						"o directorio: su nombre, nombre de la carpeta padre, el tamaño del archivo o la carpeta.\n"
-						+ "dir: Lista los archivos contenidos en el path actual.\n"
-						+ "delete <nombre_archivo_o_directorio>: Borra un archivo o una carpeta, en caso de ser una\n" + 
-						"carpeta borra todos los archivos que la contienen.");
+				cd.help();
 			}else if(comando.length==3 && comando[0].equals("mkfile")){
 				nombre = comando[1];
 				contenido = comando[2];
